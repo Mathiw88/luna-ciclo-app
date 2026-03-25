@@ -25,7 +25,7 @@ export async function getBarbers(barbershopId: string) {
     .from('profiles')
     .select('*')
     .eq('barbershop_id', barbershopId)
-    .eq('role', 'barber')
+    .in('role', ['owner', 'barber'])
     .eq('is_active', true)
     .order('joined_at', { ascending: true })
 
@@ -44,7 +44,7 @@ export async function getAllBarbers(barbershopId: string) {
     .from('profiles')
     .select('*')
     .eq('barbershop_id', barbershopId)
-    .eq('role', 'barber')
+    .in('role', ['owner', 'barber'])
     .order('joined_at', { ascending: true })
 
   if (error) {

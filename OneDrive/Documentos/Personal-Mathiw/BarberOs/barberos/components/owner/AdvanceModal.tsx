@@ -168,7 +168,7 @@ export default function AdvanceModal({ isOpen, onClose, onConfirm }: AdvanceModa
                         <div className="text-center">
                           <div className="text-xs font-medium text-text-primary">{barber.name}</div>
                           <div className="text-[10px] text-text-muted mt-0.5">
-                            Disponible: ${formatCurrency(barber.availableBalance)}
+                            Disponible: {formatCurrency(barber.availableBalance)}
                           </div>
                         </div>
                       </div>
@@ -197,7 +197,7 @@ export default function AdvanceModal({ isOpen, onClose, onConfirm }: AdvanceModa
             </div>
             {selectedBarber && amountNum > selectedBarber.availableBalance && (
               <p className="text-xs text-status-danger mt-1.5">
-                El monto excede el saldo disponible (${formatCurrency(selectedBarber.availableBalance)})
+                El monto excede el saldo disponible ({formatCurrency(selectedBarber.availableBalance)})
               </p>
             )}
           </div>
@@ -226,20 +226,20 @@ export default function AdvanceModal({ isOpen, onClose, onConfirm }: AdvanceModa
               <div className="flex justify-between items-center">
                 <span className="text-xs text-text-secondary">Saldo actual</span>
                 <span className="text-sm font-medium text-text-primary">
-                  ${formatCurrency(selectedBarber.availableBalance)}
+                  {formatCurrency(selectedBarber.availableBalance)}
                 </span>
               </div>
               <div className="h-[0.5px] bg-border-subtle" />
               <div className="flex justify-between items-center">
                 <span className="text-xs text-text-secondary">Adelanto a entregar</span>
                 <span className="text-sm font-medium text-accent-yellow">
-                  -${formatCurrency(amountNum)}
+                  -{formatCurrency(amountNum)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs font-medium text-text-secondary">Nuevo saldo</span>
                 <span className="text-base font-semibold text-accent-green">
-                  ${formatCurrency(selectedBarber.availableBalance - amountNum)}
+                  {formatCurrency(selectedBarber.availableBalance - amountNum)}
                 </span>
               </div>
             </div>
