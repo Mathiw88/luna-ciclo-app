@@ -33,7 +33,7 @@ type PersonBalance = {
   net: number
   advancesList: Advance[]
   lastPaidAt: string | null
-  lastIncomeDate: string | null
+  lastIncomeAt: string | null
 }
 
 type PayoutHistoryRow = {
@@ -98,16 +98,16 @@ export default function FinanzasBarberosPage() {
         // Ingresos del periodo (filtrado por barbershop_id para respetar RLS)
         const { data: incomes, error: incomeError } = await supabase
           .from('income_records')
-          .select('barber_amount, date')
+          .select('barber_amount, date, created_at')
           .eq('barbershop_id', shopId)
           .eq('barber_id', profile.id)
           .gte('date', periodStart)
-          .order('date', { ascending: false })
+          .order('created_at', { ascending: false })
 
         if (incomeError) throw incomeError
 
         const grossAmount = (incomes ?? []).reduce((sum, inc) => sum + inc.barber_amount, 0)
-        const lastIncomeDate = incomes && incomes.length > 0 ? incomes[0].date : null
+        const lastIncomeAt = incomes && incomes.length > 0 ? incomes[0].created_at : null
 
         // Adelantos (solo para barbers, owners no tienen)
         let advancesList: Advance[] = []
@@ -156,7 +156,7 @@ export default function FinanzasBarberosPage() {
           net: grossAmount - totalAdvances,
           advancesList,
           lastPaidAt,
-          lastIncomeDate,
+          lastIncomeAt,
         })
       }
 
@@ -172,7 +172,7 @@ export default function FinanzasBarberosPage() {
       setHistoryLoading(true)
       const { data: historyData, error: historyError } = await supabase
         .from('payouts')
-        .select('id, period_from, period_to, gross_amount, advances_amount, net_amount, paid_at, profiles(name)')
+        .select('id, period_from, period_to, gross_amount, advances_amount, net_amount, paid_at, profiles!payouts_barber_id_fkey(name)')
         .eq('barbershop_id', shopId)
         .order('paid_at', { ascending: false })
         .limit(50)
@@ -278,7 +278,40 @@ export default function FinanzasBarberosPage() {
         return
       }
 
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('barbershop_id')
+        .eq('id', user.id)
+        .single()
+
+      if (!profile?.barbershop_id) {
+        toast.error('No se encontró la barbería')
+        return
+      }
+
+      // Verificar que no haya un payout mas reciente que el ultimo ingreso (doble liquidacion)
+      const latestIncome = selectedPersonForPayout.lastIncomeAt
+      if (!latestIncome) {
+        toast.error('No hay ingresos para liquidar')
+        return
+      }
+
+      const { data: existingPayout } = await supabase
+        .from('payouts')
+        .select('id, paid_at')
+        .eq('barbershop_id', profile.barbershop_id)
+        .eq('barber_id', selectedPersonForPayout.person.id)
+        .gte('paid_at', latestIncome)
+        .limit(1)
+
+      if (existingPayout && existingPayout.length > 0) {
+        toast.error('Ya fue liquidado', { description: 'No hay ingresos nuevos desde la última liquidación' })
+        fetchBalances()
+        return
+      }
+
       const { error: payoutError } = await supabase.from('payouts').insert({
+        barbershop_id: profile.barbershop_id,
         barber_id: selectedPersonForPayout.person.id,
         period_from: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
           .toISOString()
@@ -320,7 +353,7 @@ export default function FinanzasBarberosPage() {
       {/* Topbar */}
       <div className="bg-bg-surface border-b-[0.5px] border-border-default px-5 py-4 flex items-center justify-between flex-shrink-0">
         <div>
-          <h1 className="text-[22px] font-medium text-text-primary">Adelantos y liquidaciones</h1>
+          <h1 className="text-[22px] font-medium text-text-primary">Liquidación / Adelantos</h1>
           <p className="text-xs text-text-secondary mt-0.5">
             Gestion de pagos y saldos del personal
           </p>
@@ -349,10 +382,11 @@ export default function FinanzasBarberosPage() {
             const isOwner = balance.person.role === 'owner'
 
             // Determinar si el barber esta en estado PAGADO
+            // Comparamos timestamps completos: si el ultimo pago es >= al ultimo ingreso, está pagado
             const isPaid =
               balance.lastPaidAt != null &&
-              (balance.lastIncomeDate == null || balance.lastPaidAt >= balance.lastIncomeDate)
-            const showPaidState = isPaid && balance.net <= 0
+              (balance.lastIncomeAt == null || balance.lastPaidAt >= balance.lastIncomeAt)
+            const showPaidState = isPaid
 
             return (
               <div
@@ -529,6 +563,7 @@ export default function FinanzasBarberosPage() {
               Sin liquidaciones registradas
             </div>
           ) : (
+            <div className="max-h-[400px] overflow-y-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b-[0.5px] border-border-subtle bg-bg-base/50">
@@ -599,6 +634,7 @@ export default function FinanzasBarberosPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>
@@ -616,7 +652,7 @@ export default function FinanzasBarberosPage() {
             setIsPayoutModalOpen(false)
             setSelectedPersonForPayout(null)
           }}
-          onConfirm={handlePayoutConfirm}
+          onConfirm={() => handlePayoutConfirm()}
           barber={{
             ...selectedPersonForPayout.person,
             color: (selectedPersonForPayout.person.color === 'yellow' ? 'blue' : selectedPersonForPayout.person.color) as 'blue' | 'purple' | 'green',

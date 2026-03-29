@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import BarberAvatar from '@/components/shared/BarberAvatar'
 import { formatCurrency } from '@/lib/utils'
@@ -114,6 +115,7 @@ const statusColors = {
 }
 
 export default function DashboardPage() {
+  const router = useRouter()
   const [period, setPeriod] = useState<Period>('today')
   const [barbershopId, setBarbershopId] = useState<string | null>(null)
   const [loadingInit, setLoadingInit] = useState(true)
@@ -174,6 +176,16 @@ export default function DashboardPage() {
     setLoadingMetrics(true)
     try {
       const { start, end } = getPeriodDates(p)
+
+      // Obtener IDs de owners para excluirlos de "A pagar a barberos"
+      const { data: ownerProfiles } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('barbershop_id', bsId)
+        .eq('role', 'owner')
+
+      const ownerIds = new Set((ownerProfiles ?? []).map(o => o.id))
+
       const { data: incomes, error } = await supabase
         .from('income_records')
         .select('id, barber_id, total_amount, barber_amount, shop_amount')
@@ -185,13 +197,18 @@ export default function DashboardPage() {
 
       const records = (incomes ?? []) as IncomeRecord[]
       const revenue = records.reduce((sum, r) => sum + r.total_amount, 0)
-      const barbersToPay = records.reduce((sum, r) => sum + r.barber_amount, 0)
+      // Solo contar barber_amount de barberos reales (no owners)
+      const barbersToPay = records
+        .filter(r => !ownerIds.has(r.barber_id))
+        .reduce((sum, r) => sum + r.barber_amount, 0)
       const shopAmount = records.reduce((sum, r) => sum + r.shop_amount, 0)
       const cuts = records.length
       const shopPct = revenue > 0 ? Math.round((shopAmount / revenue) * 100) : 0
 
-      // Count unique active barbers in this period
-      const uniqueBarberIds = new Set(records.map(r => r.barber_id))
+      // Count unique active barbers (excl. owners) in this period
+      const uniqueBarberIds = new Set(
+        records.filter(r => !ownerIds.has(r.barber_id)).map(r => r.barber_id)
+      )
 
       setMetrics({
         revenue,
@@ -505,7 +522,7 @@ export default function DashboardPage() {
           <div className="bg-bg-surface border-[0.5px] border-border-default rounded-xl p-4">
             <div className="flex items-center justify-between mb-3.5">
               <span className="text-sm font-medium text-[#e0e0e0]">Agenda de hoy</span>
-              <span className="text-xs text-accent-yellow cursor-pointer hover:underline">Ver completa →</span>
+              <span onClick={() => router.push('/agenda')} className="text-xs text-accent-yellow cursor-pointer hover:underline">Ver completa →</span>
             </div>
 
             {loadingToday ? (
@@ -526,8 +543,8 @@ export default function DashboardPage() {
                 No hay turnos registrados para hoy
               </div>
             ) : (
-              <div className="space-y-0">
-                {todayAppointments.map((apt) => {
+              <div className="space-y-0 max-h-[360px] overflow-y-auto pr-1">
+                {todayAppointments.slice(0, 8).map((apt) => {
                   const statusKey = apt.status as keyof typeof statusColors
                   const status = statusColors[statusKey] ?? statusColors.pending
                   const timeDisplay = apt.appointment_time.substring(0, 5)
@@ -551,6 +568,13 @@ export default function DashboardPage() {
                     </div>
                   )
                 })}
+              </div>
+            )}
+            {todayAppointments.length > 8 && (
+              <div className="mt-2 pt-2 border-t-[0.5px] border-[#222] text-center">
+                <span onClick={() => router.push('/agenda')} className="text-xs text-text-muted cursor-pointer hover:text-accent-yellow transition-colors">
+                  +{todayAppointments.length - 8} turnos más — Ver agenda completa
+                </span>
               </div>
             )}
           </div>
