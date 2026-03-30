@@ -139,15 +139,15 @@
   /* CYCLE RING */
   .cycle-visual {
     display: flex; justify-content: center; align-items: center;
-    padding: 1.5rem 0 1rem;
+    padding: 0.8rem 0 0.5rem;
   }
-  .cycle-ring-wrap { position: relative; width: 200px; height: 200px; }
-  .cycle-ring-wrap svg { width: 200px; height: 200px; transform: rotate(-90deg); }
+  .cycle-ring-wrap { position: relative; width: 150px; height: 150px; }
+  .cycle-ring-wrap svg { width: 150px; height: 150px; transform: rotate(-90deg); }
   .cycle-center {
     position: absolute; inset: 0; display: flex; flex-direction: column;
     align-items: center; justify-content: center; text-align: center;
   }
-  .cycle-day-num { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--rose); line-height: 1; }
+  .cycle-day-num { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--rose); line-height: 1; }
   .cycle-day-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
   .cycle-phase-badge {
     display: inline-block; padding: 0.3rem 0.9rem;
@@ -423,7 +423,7 @@
     <div id="tab-hoy" class="section active">
 
       <!-- CYCLE RING -->
-      <div class="card" style="text-align:center">
+      <div class="card" style="text-align:center;padding:1rem 1.4rem">
         <div class="cycle-visual">
           <div class="cycle-ring-wrap">
             <svg viewBox="0 0 200 200">
