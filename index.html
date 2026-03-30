@@ -139,20 +139,20 @@
   /* CYCLE RING */
   .cycle-visual {
     display: flex; justify-content: center; align-items: center;
-    padding: 0.8rem 0 0.5rem;
+    padding: 0.2rem 0 0;
   }
-  .cycle-ring-wrap { position: relative; width: 150px; height: 150px; }
-  .cycle-ring-wrap svg { width: 150px; height: 150px; transform: rotate(-90deg); }
+  .cycle-ring-wrap { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
+  .cycle-ring-wrap svg { width: 140px; height: 140px; transform: rotate(-90deg); display: block; }
   .cycle-center {
     position: absolute; inset: 0; display: flex; flex-direction: column;
     align-items: center; justify-content: center; text-align: center;
   }
-  .cycle-day-num { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--rose); line-height: 1; }
-  .cycle-day-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+  .cycle-day-num { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--rose); line-height: 1; }
+  .cycle-day-label { font-size: 0.65rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
   .cycle-phase-badge {
-    display: inline-block; padding: 0.3rem 0.9rem;
+    display: inline-block; padding: 0.25rem 0.9rem;
     border-radius: 20px; font-size: 0.78rem; font-weight: 500;
-    text-align: center; margin: 0.5rem auto; letter-spacing: 0.04em;
+    text-align: center; margin: 0.3rem auto; letter-spacing: 0.04em;
   }
 
   /* PHASE COLORS */
@@ -423,7 +423,7 @@
     <div id="tab-hoy" class="section active">
 
       <!-- CYCLE RING -->
-      <div class="card" style="text-align:center;padding:1rem 1.4rem">
+      <div class="card" style="text-align:center;padding:0.8rem 1.2rem">
         <div class="cycle-visual">
           <div class="cycle-ring-wrap">
             <svg viewBox="0 0 200 200">
@@ -443,7 +443,7 @@
           </div>
         </div>
         <div id="phase-badge" class="cycle-phase-badge phase-menstrual">🌑 Menstrual</div>
-        <p id="phase-desc" style="font-size:0.82rem;color:var(--text-muted);margin-top:0.5rem;line-height:1.5;padding:0 0.5rem"></p>
+        <p id="phase-desc" style="font-size:0.82rem;color:var(--text-muted);margin-top:0.3rem;line-height:1.5;padding:0 0.5rem"></p>
       </div>
 
       <!-- NEXT EVENTS -->
