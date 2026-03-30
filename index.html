@@ -1057,6 +1057,12 @@ async function sendChat() {
     const data = await res.json();
     removeTyping(typingId);
 
+    if (!res.ok) {
+      const errMsg = data.error?.message || data.error || 'Error del servidor';
+      addAiMsg('Error: ' + errMsg);
+      return;
+    }
+
     const reply = data.content?.map(b => b.text || '').join('') || 'No pude responder. Intentá de nuevo.';
     chatHistory.push({ role: 'assistant', content: reply });
     addAiMsg(reply);
