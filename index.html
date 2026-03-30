@@ -96,10 +96,11 @@
 
   /* TOP BAR */
   .topbar {
-    background: white; padding: 1.2rem 1.5rem 1rem;
+    background: white; padding: 0.9rem 1.2rem 0.8rem;
     border-bottom: 1px solid var(--border);
     position: sticky; top: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
+    width: 100%;
   }
   .topbar-left { display: flex; align-items: center; gap: 0.7rem; }
   .topbar-moon { width: 34px; height: 34px; background: linear-gradient(135deg,var(--rose),var(--mauve)); border-radius: 50%; box-shadow: inset -8px -4px 0 rgba(0,0,0,0.1); }
@@ -110,16 +111,19 @@
   /* TABS */
   .tabs {
     display: flex; background: white; border-bottom: 1px solid var(--border);
-    overflow-x: auto; scrollbar-width: none;
+    overflow-x: auto; scrollbar-width: none; width: 100%;
+    -webkit-overflow-scrolling: touch;
   }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
-    padding: 0.9rem 1.3rem; font-size: 0.82rem; font-weight: 500;
+    padding: 0.8rem 1rem; font-size: 0.78rem; font-weight: 500;
     color: var(--text-muted); border: none; background: none; cursor: pointer;
     border-bottom: 2.5px solid transparent; transition: all 0.2s; white-space: nowrap;
-    flex-shrink: 0;
+    flex-shrink: 0; outline: none; -webkit-tap-highlight-color: transparent;
   }
-  .tab.active { color: var(--rose); border-bottom-color: var(--rose); }
+  .tab.active { color: var(--rose); border-bottom-color: var(--rose); background: none; }
+  .tab:focus { outline: none; background: none; }
+  .tab:focus-visible { outline: none; background: none; }
 
   /* SECTIONS */
   .section { display: none; padding: 1.2rem 1.2rem; animation: slideUp 0.3s ease; }
@@ -332,12 +336,16 @@
 
   /* RESPONSIVE MAX WIDTH */
   .app-inner { max-width: 480px; margin: 0 auto; }
-  .topbar, .tabs, .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); }
-  body { display: flex; justify-content: center; }
-  #splash { max-width: 480px; }
+  .topbar, .tabs { width: 100%; max-width: 100%; position: sticky; left: 0; transform: none; }
+  .bottom-nav { width: 100%; max-width: 100%; left: 0; transform: none; }
+  body { display: block; }
+  #splash { max-width: 100%; }
   @media (min-width: 500px) {
-    body { background: #F5E8F0; }
-    #app { background: var(--cream); }
+    body { background: #F5E8F0; display: flex; justify-content: center; }
+    #app { background: var(--cream); max-width: 480px; }
+    .topbar, .tabs { max-width: 480px; }
+    .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); }
+    #splash { max-width: 480px; }
   }
 </style>
 </head>
