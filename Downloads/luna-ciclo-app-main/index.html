@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Luna — Tu ciclo, tu mundo</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#E8587A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Luna">
+<link rel="apple-touch-icon" href="/icons/icon-512.svg">
+<meta name="msapplication-TileColor" content="#E8587A">
 <style>
   :root {
     --rose: #E8587A;
@@ -1186,6 +1193,69 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('app').classList.add('visible');
     initApp();
   }
+});
+
+// ===================== PWA / SERVICE WORKER =====================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => {
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'activated') showToast('Luna se actualizó ✨');
+          });
+        });
+      })
+      .catch(err => console.warn('[Luna PWA] SW no pudo registrarse:', err));
+  });
+}
+
+// ===================== A2HS INSTALL PROMPT =====================
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  setTimeout(() => { if (deferredInstallPrompt) showInstallBanner(); }, 30000);
+});
+
+function showInstallBanner() {
+  if (document.getElementById('install-banner')) return;
+  const banner = document.createElement('div');
+  banner.id = 'install-banner';
+  banner.style.cssText = `
+    position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+    background:white;border:1.5px solid var(--border);border-radius:16px;
+    padding:0.9rem 1.2rem;box-shadow:var(--shadow);z-index:500;
+    display:flex;align-items:center;gap:0.8rem;max-width:340px;width:90%;
+  `;
+  banner.innerHTML = `
+    <div style="font-size:1.6rem">🌙</div>
+    <div style="flex:1">
+      <div style="font-size:0.85rem;font-weight:600;color:var(--text)">Instalá Luna</div>
+      <div style="font-size:0.75rem;color:var(--text-muted)">Accedé sin internet desde tu pantalla de inicio</div>
+    </div>
+    <button onclick="installPWA()" style="padding:0.5rem 0.9rem;background:linear-gradient(135deg,var(--rose),var(--mauve));color:white;border:none;border-radius:10px;font-size:0.8rem;font-family:'DM Sans',sans-serif;cursor:pointer">Instalar</button>
+    <button onclick="document.getElementById('install-banner').remove()" style="background:none;border:none;font-size:1.2rem;color:var(--text-muted);cursor:pointer;padding:0">✕</button>
+  `;
+  document.body.appendChild(banner);
+  setTimeout(() => { if (document.getElementById('install-banner')) banner.remove(); }, 15000);
+}
+
+async function installPWA() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.remove();
+  if (outcome === 'accepted') showToast('¡Luna instalada! 🌙✨');
+}
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  showToast('¡Luna instalada en tu pantalla de inicio! 🌙');
 });
 </script>
 </body>
