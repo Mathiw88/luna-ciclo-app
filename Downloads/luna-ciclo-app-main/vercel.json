@@ -1,13 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/chat.js", "use": "@vercel/node" },
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "sw.js", "use": "@vercel/static" },
-    { "src": "manifest.json", "use": "@vercel/static" },
-    { "src": "icons/*.svg", "use": "@vercel/static" },
-    { "src": "icons/*.png", "use": "@vercel/static" }
-  ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
     {
@@ -30,7 +22,7 @@
       "src": "/icons/(.*)",
       "dest": "/icons/$1",
       "headers": {
-        "Cache-Control": "public, max-age=2592000, immutable"
+        "Cache-Control": "public, max-age=86400"
       }
     },
     { "src": "/(.*)", "dest": "/index.html" }
