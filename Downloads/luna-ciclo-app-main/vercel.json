@@ -18,13 +18,9 @@
         "Content-Type": "application/manifest+json; charset=utf-8"
       }
     },
-    {
-      "src": "/icons/(.*)",
-      "dest": "/icons/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=86400"
-      }
-    },
+    { "src": "/apple-touch-icon.png", "dest": "/apple-touch-icon.png" },
+    { "src": "/icon-192.png", "dest": "/icons/icon-192.png" },
+    { "src": "/icon-512.png", "dest": "/icons/icon-512.png" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
