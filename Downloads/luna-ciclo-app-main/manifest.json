@@ -1,0 +1,33 @@
+{
+  "name": "Luna — Tu ciclo, tu mundo",
+  "short_name": "Luna",
+  "description": "Tu acompañante personal para el seguimiento del ciclo menstrual. Registrá síntomas, consultá predicciones y recibí consejos personalizados.",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#E8587A",
+  "background_color": "#FFF8F5",
+  "categories": ["health", "lifestyle"],
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
