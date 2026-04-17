@@ -1,6 +1,8 @@
 {
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
+    { "src": "/favicon.ico", "dest": "/api/favicon.js" },
+    { "src": "/favicon.png", "dest": "/api/favicon.js" },
     { "src": "/sw.js", "dest": "/api/sw.js" },
     { "src": "/apple-touch-icon.png", "dest": "/api/icon.js" },
     { "src": "/icon-192.png", "dest": "/api/icon192.js" },

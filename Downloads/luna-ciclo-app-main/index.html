@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Luna — Tu ciclo, tu mundo</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.png" type="image/png">
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#E8587A">
@@ -356,11 +357,11 @@
   body { display: block; }
   #splash { max-width: 100%; }
   @media (min-width: 500px) {
-    body { background: #F5E8F0; display: flex; justify-content: center; }
-    #app { background: var(--cream); max-width: 480px; }
+    body { background: #F5E8F0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
+    #app { background: var(--cream); max-width: 480px; width: 480px; }
     .topbar, .tabs { max-width: 480px; }
     .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); }
-    #splash { max-width: 480px; }
+    #splash { max-width: 480px; width: 480px; margin: 0 auto; left: 50%; transform: translateX(-50%); }
   }
 </style>
 </head>
