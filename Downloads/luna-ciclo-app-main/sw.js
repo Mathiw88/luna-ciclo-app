@@ -1,4 +1,4 @@
-const CACHE_NAME = 'luna-v1';
+const CACHE_NAME = 'luna-v2';
 
 const PRECACHE_URLS = [
   '/',
