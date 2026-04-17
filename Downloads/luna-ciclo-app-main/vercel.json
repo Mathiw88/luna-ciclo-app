@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/chat.js": { "runtime": "@vercel/node@3" },
-    "api/sw.js": { "runtime": "@vercel/node@3" },
-    "api/icon.js": { "runtime": "@vercel/node@3" }
-  },
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
     { "src": "/sw.js", "dest": "/api/sw.js" },
