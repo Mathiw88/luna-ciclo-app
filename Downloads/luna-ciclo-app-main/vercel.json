@@ -1,26 +1,13 @@
 {
   "functions": {
-    "api/chat.js": {
-      "runtime": "@vercel/node@3"
-    }
+    "api/chat.js": { "runtime": "@vercel/node@3" },
+    "api/sw.js": { "runtime": "@vercel/node@3" },
+    "api/icon.js": { "runtime": "@vercel/node@3" }
   },
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
     { "src": "/sw.js", "dest": "/api/sw.js" },
     { "src": "/apple-touch-icon.png", "dest": "/api/icon.js" },
-    {
-      "src": "/sw.js",
-      "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Service-Worker-Allowed": "/"
-      }
-    },
-    {
-      "src": "/manifest.json",
-      "headers": {
-        "Content-Type": "application/manifest+json; charset=utf-8"
-      }
-    },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
