@@ -357,11 +357,11 @@
   body { display: block; }
   #splash { max-width: 100%; }
   @media (min-width: 500px) {
-    body { background: #F5E8F0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
-    #app { background: var(--cream); max-width: 480px; width: 480px; }
-    .topbar, .tabs { max-width: 480px; }
+    body { background: #F5E8F0; }
+    #app { background: var(--cream); max-width: 480px; margin: 0 auto; }
+    .topbar, .tabs { max-width: 480px; margin: 0 auto; }
     .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); }
-    #splash { max-width: 480px; width: 480px; margin: 0 auto; left: 50%; transform: translateX(-50%); }
+    #splash { max-width: 480px; margin: 0 auto; left: unset; transform: none; position: relative; }
   }
 </style>
 </head>
